@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Authentification PicknMat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffc3e0 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        .log {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Authentification PicknMat</h1>
+        <p>Ce test permet de vérifier si Firebase fonctionne correctement.</p>
+        
+        <button onclick="testFirebaseConfig()">1. Tester la config Firebase</button>
+        <button onclick="testGoogleAuth()">2. Tester l'auth Google</button>
+        <button onclick="clearLogs()">Effacer les logs</button>
+        
+        <div id="logs" class="log">
+            <div>Cliquez sur les boutons pour tester...</div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCioo-wvVjNdvjZyvnLjLL-0MH-bjmXhFg",
+            authDomain: "chatt-3f532.firebaseapp.com",
+            projectId: "chatt-3f532",
+            storageBucket: "chatt-3f532.firebasestorage.app",
+            appId: "1:914545949633:web:d189481c81af0037830d40",
+        };
+
+        // Initialiser Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Fonctions de test
+        window.testFirebaseConfig = function() {
+            addLog('🔧 Test de la configuration Firebase...', 'info');
+            
+            const config = {
+                apiKey: firebaseConfig.apiKey ? '✅ Définie' : '❌ Manquante',
+                authDomain: firebaseConfig.authDomain,
+                projectId: firebaseConfig.projectId,
+                appId: firebaseConfig.appId ? '✅ Définie' : '❌ Manquante'
+            };
+            
+            addLog('Configuration Firebase:', 'info');
+            addLog(JSON.stringify(config, null, 2), 'info');
+            
+            if (firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId) {
+                addLog('✅ Configuration Firebase OK', 'success');
+            } else {
+                addLog('❌ Configuration Firebase incomplète', 'error');
+            }
+        };
+
+        window.testGoogleAuth = async function() {
+            addLog('🔐 Test de l\'authentification Google...', 'info');
+            
+            try {
+                addLog('Ouverture de la popup Google...', 'info');
+                const result = await signInWithPopup(auth, provider);
+                
+                addLog('✅ Authentification réussie!', 'success');
+                addLog(`Utilisateur: ${result.user.email}`, 'success');
+                addLog(`UID: ${result.user.uid}`, 'success');
+                
+            } catch (error) {
+                addLog('❌ Erreur d\'authentification:', 'error');
+                addLog(error.message, 'error');
+                addLog('Code d\'erreur: ' + error.code, 'error');
+            }
+        };
+
+        window.clearLogs = function() {
+            document.getElementById('logs').innerHTML = '<div>Logs effacés...</div>';
+        };
+
+        function addLog(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            logs.appendChild(div);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // Test automatique au chargement
+        addLog('🚀 Page de test chargée', 'success');
+        addLog('Cliquez sur "1. Tester la config Firebase" pour commencer', 'info');
+    </script>
+</body>
+</html>
