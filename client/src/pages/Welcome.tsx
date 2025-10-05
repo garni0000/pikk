@@ -4,8 +4,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Shield, CheckCircle } from "lucide-react";
 
 export default function Welcome() {
-  const handleGoogleSignIn = () => {
-    signInWithGoogle();
+  const handleGoogleSignIn = async () => {
+    try {
+      console.log('Button clicked, starting authentication...');
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Authentication error:', error);
+      alert('Erreur de connexion: ' + (error as Error).message);
+    }
   };
 
   return (
