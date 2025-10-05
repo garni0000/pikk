@@ -7,9 +7,20 @@ import admin from "firebase-admin";
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY 
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+    : null;
+
+  if (serviceAccount) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  } else {
+    // Fallback to application default (for local development)
+    admin.initializeApp({
+      credential: admin.credential.applicationDefault(),
+    });
+  }
 }
 
 interface AuthenticatedRequest extends Request {
@@ -124,8 +135,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.json({ user });
-    } catch (error) {
-      res.status(401).json({ message: 'Invalid token' });
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      res.status(401).json({ 
+        message: 'Authentication failed', 
+        error: error.message 
+      });
     }
   });
 
