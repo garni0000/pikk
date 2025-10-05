@@ -1,0 +1,138 @@
+Crée une application web de dating nommée PicknMat avec les critères suivants :
+
+🔹 Technologie
+
+Utiliser React + TypeScript + Vite pour le frontend
+
+Utiliser Node.js + Express + TypeScript pour le backend
+
+Base de données : MySQL
+
+Authentification : Firebase (Google Sign-In)
+
+🔹 Structure des dossiers
+root/
+ ├─ client/        → Frontend React/Vite
+ ├─ server/        → Backend Express (TypeScript)
+ │    ├─ routes/
+ │    ├─ controllers/
+ │    ├─ db/
+ │    ├─ models/
+ │    └─ index.ts
+ ├─ package.json
+ ├─ tsconfig.json
+ └─ .replit (run = "npm run dev")
+
+🔹 Fonctionnalités utilisateur
+
+✅ 1. Page d’accueil avec connexion Google
+
+Utiliser Firebase Auth
+
+Après connexion, l’utilisateur va à la page de création de profil
+
+✅ 2. Création de profil (obligatoire à la 1ère connexion)
+Champs :
+
+Nom
+
+Âge
+
+Sexe (male / female / other)
+
+Préférence (voir sexe opposé si male/female, sinon voir same)
+
+3 photos maximum (stockées sur Firebase Storage)
+
+Sauvegarder dans MySQL
+
+✅ 3. Page Feed (Tinder style)
+
+Afficher uniquement :
+
+Les femmes pour les hommes
+
+Les hommes pour les femmes
+
+Les "other" entre eux
+
+Boutons ✔️ (like) et ❌ (skip)
+
+✅ 4. Page Match
+
+Quand 2 personnes se likent → match
+
+Liste de matches avec photo + nom
+
+✅ 5. Chat
+
+Chaque match permet d’envoyer et recevoir des messages en temps réel
+
+✅ 6. Page Profil
+
+Afficher et modifier ses infos :
+
+Nom
+
+Âge
+
+Photos (max 3)
+
+Genre
+
+Préférences
+
+✅ 7. Thème & UI
+
+Nom de l’app : PicknMat
+
+Couleur principale : rose (#ff4081 ou équivalent)
+
+Icônes libres (ex: Lucide, Heroicons ou FontAwesome)
+
+UI moderne façon Tinder (cartes swipables)
+
+✅ 8. API Backend (Express)
+Endpoints minimum :
+
+POST   /api/users            → créer/modifier profil
+GET    /api/users/feed       → récupérer suggestions
+POST   /api/match            → liker / matcher
+GET    /api/match/:id/chat   → récupérer messages
+POST   /api/message          → envoyer message
+
+
+✅ 9. Connexion MySQL
+Variables d’environnement :
+
+MYSQL_HOST=localhost
+MYSQL_USER=solkahor_datting
+MYSQL_PASSWORD=Mysitedattxxx
+MYSQL_DATABASE=solkahor_datting
+PORT=5000
+
+
+✅ 10. .replit doit contenir :
+
+modules = ["nodejs-20", "web"]
+run = "npm run dev"
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+PORT = "5000"
+
+
+✅ 11. Scripts dans package.json :
+
+"scripts": {
+  "dev": "NODE_ENV=development tsx server/index.ts",
+  "build": "...",
+  "start": "NODE_ENV=production node dist/index.js"
+}
+
+
+✅ 12. Compatibilité Replit
+
+Lancer frontend + backend avec une seule commande npm run dev
