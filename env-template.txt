@@ -1,0 +1,15 @@
+# Configuration requise pour PicknMat
+# Copiez ce contenu dans un fichier .env à la racine du projet
+
+# Base de données PostgreSQL (requis)
+# Obtenez cette URL depuis votre fournisseur de base de données (Neon, Supabase, etc.)
+DATABASE_URL=postgresql://username:password@host:port/database
+
+# Configuration Firebase (requis)
+# Obtenez ces valeurs depuis votre console Firebase
+VITE_FIREBASE_API_KEY=your_firebase_api_key_here
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id_here
+VITE_FIREBASE_APP_ID=your_firebase_app_id_here
+
+# Port du serveur (optionnel, par défaut 5000)
+PORT=5000
