@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
@@ -17,7 +17,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 // Middleware to verify Firebase token
-const authenticateUser = async (req: any, res: any, next: any) => {
+const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
   if (!token) {
@@ -32,7 +32,7 @@ const authenticateUser = async (req: any, res: any, next: any) => {
       return res.status(401).json({ message: 'User not found' });
     }
     
-    req.userId = user.id;
+    (req as AuthenticatedRequest).userId = user.id;
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid token' });
@@ -88,7 +88,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     ws.on('close', () => {
       // Remove client from map
-      for (const [userId, client] of clients.entries()) {
+      const entries = Array.from(clients.entries());
+      for (const [userId, client] of entries) {
         if (client === ws) {
           clients.delete(userId);
           break;
@@ -129,11 +130,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Profile creation/update
-  app.post('/api/profile', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.post('/api/profile', authenticateUser, async (req: Request, res: Response) => {
     try {
       const profileData = profileCreationSchema.parse(req.body);
+      const authReq = req as AuthenticatedRequest;
       
-      const updatedUser = await storage.updateUser(req.userId!, {
+      const updatedUser = await storage.updateUser(authReq.userId!, {
         ...profileData,
         isProfileComplete: true,
       });
@@ -145,9 +147,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user profile
-  app.get('/api/profile', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.get('/api/profile', authenticateUser, async (req: Request, res: Response) => {
     try {
-      const user = await storage.getUser(req.userId!);
+      const authReq = req as AuthenticatedRequest;
+      const user = await storage.getUser(authReq.userId!);
       res.json({ user });
     } catch (error) {
       res.status(500).json({ message: 'Failed to get profile' });
@@ -155,9 +158,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get feed (potential matches)
-  app.get('/api/feed', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.get('/api/feed', authenticateUser, async (req: Request, res: Response) => {
     try {
-      const users = await storage.getPotentialMatches(req.userId!, 10);
+      const authReq = req as AuthenticatedRequest;
+      const users = await storage.getPotentialMatches(authReq.userId!, 10);
       res.json({ users });
     } catch (error) {
       res.status(500).json({ message: 'Failed to get feed' });
@@ -165,19 +169,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Like/Skip user
-  app.post('/api/like', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.post('/api/like', authenticateUser, async (req: Request, res: Response) => {
     try {
+      const authReq = req as AuthenticatedRequest;
       const { toUserId, action } = req.body;
       
       if (action === 'like') {
-        const like = await storage.createLike(req.userId!, toUserId);
+        const like = await storage.createLike(authReq.userId!, toUserId);
         
         // Check for mutual like
-        const isMutualLike = await storage.checkMutualLike(req.userId!, toUserId);
+        const isMutualLike = await storage.checkMutualLike(authReq.userId!, toUserId);
         
         if (isMutualLike) {
           // Create match
-          const match = await storage.createMatch(req.userId!, toUserId);
+          const match = await storage.createMatch(authReq.userId!, toUserId);
           res.json({ like, match, isMatch: true });
         } else {
           res.json({ like, isMatch: false });
@@ -191,9 +196,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user matches
-  app.get('/api/matches', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.get('/api/matches', authenticateUser, async (req: Request, res: Response) => {
     try {
-      const matches = await storage.getUserMatches(req.userId!);
+      const authReq = req as AuthenticatedRequest;
+      const matches = await storage.getUserMatches(authReq.userId!);
       res.json({ matches });
     } catch (error) {
       res.status(500).json({ message: 'Failed to get matches' });
@@ -201,7 +207,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get messages for a match
-  app.get('/api/matches/:matchId/messages', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.get('/api/matches/:matchId/messages', authenticateUser, async (req: Request, res: Response) => {
     try {
       const { matchId } = req.params;
       const messages = await storage.getMatchMessages(matchId);
@@ -212,10 +218,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Send message
-  app.post('/api/messages', authenticateUser, async (req: AuthenticatedRequest, res) => {
+  app.post('/api/messages', authenticateUser, async (req: Request, res: Response) => {
     try {
+      const authReq = req as AuthenticatedRequest;
       const { matchId, content } = req.body;
-      const message = await storage.createMessage(matchId, req.userId!, content);
+      const message = await storage.createMessage(matchId, authReq.userId!, content);
       res.json({ message });
     } catch (error) {
       res.status(500).json({ message: 'Failed to send message' });

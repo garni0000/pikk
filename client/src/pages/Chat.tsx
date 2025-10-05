@@ -23,12 +23,20 @@ export default function Chat() {
   const [messages, setMessages] = useState<MessageWithSender[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: messagesData, isLoading } = useQuery({
+  const { data: messagesData, isLoading } = useQuery<{ messages: MessageWithSender[] }>({
     queryKey: ['/api/matches', matchId, 'messages'],
     enabled: !!matchId,
   });
 
-  const { data: matchesData } = useQuery({
+  interface MatchWithUsers {
+    id: string;
+    user1: User;
+    user2: User;
+    user1Id: string;
+    user2Id: string;
+  }
+
+  const { data: matchesData } = useQuery<{ matches: MatchWithUsers[] }>({
     queryKey: ['/api/matches'],
     enabled: !!currentUser,
   });
@@ -144,7 +152,7 @@ export default function Chat() {
           
           <div className="relative">
             <img
-              src={chatPartner.photos?.[0] || '/api/placeholder/100/100'}
+              src={(chatPartner.photos as string[])?.[0] || '/api/placeholder/100/100'}
               alt={chatPartner.name}
               className="w-12 h-12 rounded-full object-cover"
             />
@@ -179,7 +187,7 @@ export default function Chat() {
             >
               {msg.senderId !== currentUser?.id && (
                 <img
-                  src={chatPartner.photos?.[0] || '/api/placeholder/100/100'}
+                  src={(chatPartner.photos as string[])?.[0] || '/api/placeholder/100/100'}
                   alt={chatPartner.name}
                   className="w-8 h-8 rounded-full object-cover"
                 />

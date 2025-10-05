@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Camera, Plus, X, MarsStroke, Venus } from "lucide-react";
+import { Camera, Plus, X, User } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function ProfileCreation() {
@@ -193,7 +193,7 @@ export default function ProfileCreation() {
                               htmlFor="gender-male"
                               className="p-4 bg-background border-2 border-input rounded-xl text-center peer-checked:border-primary peer-checked:bg-accent transition-all cursor-pointer flex flex-col items-center"
                             >
-                              <MarsStroke className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
+                              <User className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
                               <span className="text-sm font-medium">Male</span>
                             </Label>
                           </div>
@@ -203,7 +203,7 @@ export default function ProfileCreation() {
                               htmlFor="gender-female"
                               className="p-4 bg-background border-2 border-input rounded-xl text-center peer-checked:border-primary peer-checked:bg-accent transition-all cursor-pointer flex flex-col items-center"
                             >
-                              <Venus className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
+                              <User className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
                               <span className="text-sm font-medium">Female</span>
                             </Label>
                           </div>
@@ -243,7 +243,7 @@ export default function ProfileCreation() {
                               htmlFor="pref-male"
                               className="p-4 bg-background border-2 border-input rounded-xl text-center peer-checked:border-primary peer-checked:bg-accent transition-all cursor-pointer flex flex-col items-center"
                             >
-                              <MarsStroke className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
+                              <User className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
                               <span className="text-sm font-medium">Men</span>
                             </Label>
                           </div>
@@ -253,7 +253,7 @@ export default function ProfileCreation() {
                               htmlFor="pref-female"
                               className="p-4 bg-background border-2 border-input rounded-xl text-center peer-checked:border-primary peer-checked:bg-accent transition-all cursor-pointer flex flex-col items-center"
                             >
-                              <Venus className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
+                              <User className="w-6 h-6 mb-2 text-muted-foreground peer-checked:text-primary" />
                               <span className="text-sm font-medium">Women</span>
                             </Label>
                           </div>

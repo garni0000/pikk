@@ -15,7 +15,7 @@ export default function Feed() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: feedData, isLoading } = useQuery({
+  const { data: feedData, isLoading } = useQuery<{ users: User[] }>({
     queryKey: ['/api/feed'],
     refetchOnMount: true,
   });
@@ -125,7 +125,7 @@ export default function Feed() {
               style={{ transform: 'scale(0.95) translateY(10px)', zIndex: -1 }}
             >
               <img 
-                src={users[currentIndex + 1].photos?.[0] || '/api/placeholder/400/600'} 
+                src={(users[currentIndex + 1].photos as string[])?.[0] || '/api/placeholder/400/600'} 
                 alt="Next profile"
                 className="w-full h-full object-cover"
               />

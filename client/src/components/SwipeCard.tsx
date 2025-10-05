@@ -16,7 +16,7 @@ export default function SwipeCard({ user, onLike, onSkip, onNext }: SwipeCardPro
   const [dragOffset, setDragOffset] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const photos = user.photos || [];
+  const photos = (user.photos as string[]) || [];
   const currentPhoto = photos[currentPhotoIndex] || '/api/placeholder/400/600';
 
   const handlePhotoClick = (event: React.MouseEvent) => {

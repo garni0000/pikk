@@ -15,7 +15,7 @@ export default function Matches() {
   const { user: currentUser } = useAuth();
   const [, setLocation] = useLocation();
 
-  const { data: matchesData, isLoading } = useQuery({
+  const { data: matchesData, isLoading } = useQuery<{ matches: MatchWithUsers[] }>({
     queryKey: ['/api/matches'],
     enabled: !!currentUser,
   });
@@ -67,7 +67,7 @@ export default function Matches() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {matches.map((match) => {
               const matchedUser = getMatchedUser(match);
-              const photoUrl = matchedUser.photos?.[0];
+              const photoUrl = (matchedUser.photos as string[])?.[0];
 
               return (
                 <Card

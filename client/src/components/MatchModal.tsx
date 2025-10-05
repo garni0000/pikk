@@ -38,7 +38,7 @@ export default function MatchModal({ isOpen, matchedUser, onClose, onChat }: Mat
           <Heart className="w-8 h-8 text-primary" />
           <div className="relative">
             <img
-              src={matchedUser.photos?.[0] || '/api/placeholder/200/200'}
+              src={(matchedUser.photos as string[])?.[0] || '/api/placeholder/200/200'}
               alt={`${matchedUser.name}'s photo`}
               className="w-24 h-24 rounded-full object-cover border-4 border-primary"
             />

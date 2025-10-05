@@ -17,7 +17,7 @@ export default function Profile() {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data: profileData, isLoading } = useQuery({
+  const { data: profileData, isLoading } = useQuery<{ user: typeof user }>({
     queryKey: ['/api/profile'],
     enabled: !!user,
   });
@@ -88,7 +88,7 @@ export default function Profile() {
             <div className="space-y-3">
               <div className="relative aspect-square rounded-2xl overflow-hidden group">
                 <img
-                  src={currentUser?.photos?.[0] || '/api/placeholder/600/600'}
+                  src={(currentUser?.photos as string[])?.[0] || '/api/placeholder/600/600'}
                   alt="Profile photo 1"
                   className="w-full h-full object-cover"
                 />
@@ -111,7 +111,7 @@ export default function Profile() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="relative aspect-square rounded-xl overflow-hidden group">
                   <img
-                    src={currentUser?.photos?.[1] || '/api/placeholder/400/400'}
+                    src={(currentUser?.photos as string[])?.[1] || '/api/placeholder/400/400'}
                     alt="Profile photo 2"
                     className="w-full h-full object-cover"
                   />
