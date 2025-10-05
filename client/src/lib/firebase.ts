@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
-import { getStorage } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { nanoid } from "nanoid";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,4 +23,15 @@ export const signInWithGoogle = () => {
 
 export const handleRedirectResult = () => {
   return getRedirectResult(auth);
+};
+
+export const uploadPhoto = async (file: File, userId: string): Promise<string> => {
+  const fileExtension = file.name.split('.').pop();
+  const fileName = `${userId}/${nanoid()}.${fileExtension}`;
+  const storageRef = ref(storage, `profile-photos/${fileName}`);
+  
+  await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(storageRef);
+  
+  return downloadURL;
 };

@@ -11,14 +11,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Camera, Plus, X, User } from "lucide-react";
+import { Camera, Plus, X, User, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
+import { uploadPhoto } from "@/lib/firebase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProfileCreation() {
   const [photos, setPhotos] = useState<string[]>([]);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const form = useForm<ProfileCreation>({
     resolver: zodResolver(profileCreationSchema),
@@ -57,22 +62,51 @@ export default function ProfileCreation() {
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && photos.length < 3) {
-      // In a real app, upload to Firebase Storage and get URL
       const url = URL.createObjectURL(file);
       const newPhotos = [...photos, url];
+      const newFiles = [...photoFiles, file];
       setPhotos(newPhotos);
+      setPhotoFiles(newFiles);
       form.setValue('photos', newPhotos);
     }
   };
 
   const removePhoto = (index: number) => {
     const newPhotos = photos.filter((_, i) => i !== index);
+    const newFiles = photoFiles.filter((_, i) => i !== index);
     setPhotos(newPhotos);
+    setPhotoFiles(newFiles);
     form.setValue('photos', newPhotos);
   };
 
-  const onSubmit = (data: ProfileCreation) => {
-    createProfileMutation.mutate({ ...data, photos });
+  const onSubmit = async (data: ProfileCreation) => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not found. Please sign in again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setUploadingPhotos(true);
+      
+      // Upload all photos to Firebase Storage
+      const uploadedPhotoUrls = await Promise.all(
+        photoFiles.map(file => uploadPhoto(file, user.id))
+      );
+      
+      // Submit profile with real Firebase Storage URLs
+      createProfileMutation.mutate({ ...data, photos: uploadedPhotoUrls });
+    } catch (error) {
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload photos. Please try again.",
+        variant: "destructive",
+      });
+      setUploadingPhotos(false);
+    }
   };
 
   return (
@@ -277,10 +311,19 @@ export default function ProfileCreation() {
                 <Button 
                   type="submit" 
                   className="w-full bg-primary hover:bg-secondary font-semibold py-4"
-                  disabled={createProfileMutation.isPending}
+                  disabled={createProfileMutation.isPending || uploadingPhotos}
                   data-testid="button-create-profile"
                 >
-                  {createProfileMutation.isPending ? "Creating..." : "Continue"}
+                  {uploadingPhotos ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Uploading photos...
+                    </>
+                  ) : createProfileMutation.isPending ? (
+                    "Creating..."
+                  ) : (
+                    "Continue"
+                  )}
                 </Button>
               </form>
             </Form>
