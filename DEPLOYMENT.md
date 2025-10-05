@@ -65,3 +65,4 @@ Votre application sera disponible sur : `https://picknmat.onrender.com` (ou le n
 - Vérifiez les logs dans le dashboard Render
 - Assurez-vous que toutes les variables d'environnement sont correctes
 - Vérifiez que Firebase est configuré pour accepter votre domaine Render
+

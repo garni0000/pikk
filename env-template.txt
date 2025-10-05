@@ -13,3 +13,4 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id_here
 
 # Port du serveur (optionnel, par défaut 5000)
 PORT=5000
+

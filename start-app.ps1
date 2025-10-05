@@ -21,3 +21,4 @@ Write-Host ""
 
 # Start the server
 & npx tsx server/index.ts
+

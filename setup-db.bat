@@ -8,3 +8,4 @@ npx drizzle-kit push
 echo.
 echo Database setup complete!
 pause
+
