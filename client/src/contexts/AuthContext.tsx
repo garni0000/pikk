@@ -39,16 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    // Handle redirect result on app load
-    handleRedirectResult().then((result) => {
-      if (result) {
-        // User signed in via redirect
-        console.log('User signed in via redirect');
-      }
-    }).catch((error) => {
-      console.error('Redirect result error:', error);
-      setLoading(false);
-    });
+    // No need to handle redirect results with popup authentication
 
     return unsubscribe;
   }, []);

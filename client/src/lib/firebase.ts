@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { nanoid } from "nanoid";
 
@@ -18,11 +18,7 @@ export const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => {
-  return signInWithRedirect(auth, provider);
-};
-
-export const handleRedirectResult = () => {
-  return getRedirectResult(auth);
+  return signInWithPopup(auth, provider);
 };
 
 export const uploadPhoto = async (file: File, userId: string): Promise<string> => {
