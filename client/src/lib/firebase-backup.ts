@@ -47,3 +47,4 @@ export const uploadPhoto = async (file: File, userId: string): Promise<string> =
   
   return downloadURL;
 };
+

@@ -3,20 +3,20 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { nanoid } from "nanoid";
 
+// Configuration Firebase directe (pour assurer le fonctionnement)
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app`,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyCioo-wvVjNdvjZyvnLjLL-0MH-bjmXhFg",
+  authDomain: "chatt-3f532.firebaseapp.com",
+  projectId: "chatt-3f532",
+  storageBucket: "chatt-3f532.firebasestorage.app",
+  appId: "1:914545949633:web:d189481c81af0037830d40",
 };
 
-// Debug: Log Firebase config (remove in production)
-console.log('Firebase Config:', {
-  apiKey: firebaseConfig.apiKey ? 'Set' : 'Missing',
+console.log('Firebase Config (Direct):', {
+  apiKey: 'Set',
   authDomain: firebaseConfig.authDomain,
   projectId: firebaseConfig.projectId,
-  appId: firebaseConfig.appId ? 'Set' : 'Missing'
+  appId: 'Set'
 });
 
 const app = initializeApp(firebaseConfig);

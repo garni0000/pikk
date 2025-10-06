@@ -60,3 +60,4 @@ curl -X POST https://pikk.onrender.com/api/auth \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_FIREBASE_TOKEN"
 ```
+
